@@ -1,0 +1,17 @@
+
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Test and lint cache
+.pytest_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+
+# Operating system
+.DS_Store
