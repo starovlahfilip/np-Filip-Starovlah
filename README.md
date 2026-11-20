@@ -260,19 +260,79 @@ np-filip-starovlah/
 
 ### Arhitektura i tok izvršavanja
 
+
 ```mermaid
-flowchart TD
-    A[Main] --> B[IrisExperiment]
-    B --> C[BaseExperiment]
-    C --> D[ModelFactory]
-    D --> E[ML Model]
-    C --> F[MetricStrategy]
-    F --> G[Accuracy / Precision / Recall / F1]
-    C --> H[TrainingMonitor]
-    H --> I[ConsoleObserver]
-    C --> J[Measure Time Decorator]
-    C --> K[Iris Dataset]
+flowchart TB
+
+    MAIN(["MAIN<br/>Pokretanje aplikacije"])
+
+    subgraph CONFIG["1. KONFIGURACIJA"]
+        direction LR
+        IRIS["IrisExperiment"]
+        MON["TrainingMonitor"]
+        CONSOLE["ConsoleObserver"]
+        ACC["AccuracyStrategy"]
+
+        MON -->|"notify()"| CONSOLE
+    end
+
+    subgraph EXECUTION["2. TOK EKSPERIMENTA"]
+        direction LR
+        BASE["BaseExperiment<br/>run()"]
+        DATA["Učitavanje Iris<br/>podataka"]
+        SPLIT["Podjela podataka<br/>Train / Test"]
+        TRAIN["Treniranje<br/>modela"]
+        PRED["Predikcija"]
+        EVAL["Evaluacija"]
+        RESULT(["Konačni rezultat"])
+
+        BASE --> DATA --> SPLIT --> TRAIN
+        TRAIN --> PRED --> EVAL --> RESULT
+    end
+
+    subgraph PATTERNS["3. PRIMIJENJENI OBRASCI DIZAJNA"]
+        direction LR
+
+        FACTORY["FACTORY<br/>ModelFactory<br/><br/>Kreiranje ML modela"]
+
+        STRATEGY["STRATEGY<br/>MetricStrategy<br/><br/>Izbor metrike:<br/>Accuracy, Precision,<br/>Recall, F1-score"]
+
+        OBSERVER["OBSERVER<br/>Praćenje događaja<br/>i obavještavanje"]
+
+        DECORATOR["DECORATOR<br/>measure_time()<br/><br/>Mjerenje vremena"]
+
+    end
+
+    MAIN --> IRIS
+    MAIN --> MON
+    MAIN --> CONSOLE
+    MAIN --> ACC
+
+    IRIS -. "nasljeđuje" .-> BASE
+
+    TRAIN -. "koristi" .-> FACTORY
+    EVAL -. "koristi" .-> STRATEGY
+    BASE -. "šalje događaje" .-> MON
+    MON -. "primjenjuje" .-> OBSERVER
+    DECORATOR -. "obavija run()" .-> BASE
+
+    classDef main fill:#17365D,stroke:#60A5FA,color:#FFFFFF,stroke-width:2px
+    classDef execution fill:#164E63,stroke:#22D3EE,color:#FFFFFF,stroke-width:1.5px
+    classDef factory fill:#365314,stroke:#A3E635,color:#FFFFFF
+    classDef strategy fill:#713F12,stroke:#FACC15,color:#FFFFFF
+    classDef observer fill:#581C87,stroke:#C084FC,color:#FFFFFF
+    classDef decorator fill:#7F1D1D,stroke:#F87171,color:#FFFFFF
+    classDef result fill:#14532D,stroke:#4ADE80,color:#FFFFFF,stroke-width:2px
+
+    class MAIN main
+    class IRIS,BASE,DATA,SPLIT,TRAIN,PRED,EVAL execution
+    class FACTORY factory
+    class STRATEGY,ACC strategy
+    class MON,CONSOLE,OBSERVER observer
+    class DECORATOR decorator
+    class RESULT result
 ```
+
 
 ### Pokretanje projekta
 
