@@ -196,3 +196,146 @@ np-filip-starovlah/
 ├── pyproject.toml
 └── README.md
 ```
+
+
+---
+
+## Mini projekat 2: mini okvir za ML eksperimente
+
+### Opis projekta
+
+Cilj projekta je razvoj jednostavnog frameworka za izvršavanje i evaluaciju eksperimenata mašinskog učenja. Framework omogućava kreiranje različitih ML modela, izbor evaluacione metrike, praćenje toka treniranja i mjerenje vremena izvršavanja.
+
+Za demonstraciju je korišćen Iris skup podataka iz biblioteke Scikit-learn, koji sadrži podatke o tri vrste cvijeta irisa.
+
+### Korišćeni obrasci dizajna
+
+U projektu je implementirano pet obrazaca dizajna:
+
+1. **Factory Pattern** – klasa `ModelFactory` omogućava kreiranje različitih modela: Logistic Regression, Decision Tree i K-Nearest Neighbors.
+2. **Strategy Pattern** – omogućava izbor metrike za evaluaciju modela: Accuracy, Precision, Recall i F1-score.
+3. **Observer Pattern** – omogućava praćenje toka eksperimenta i slanje obavještenja o početku i završetku treniranja i evaluacije.
+4. **Template Method Pattern** – klasa `BaseExperiment` definiše osnovni redosljed koraka eksperimenta, dok konkretna klasa implementira učitavanje podataka.
+5. **Decorator Pattern** – dekorator `measure_time` mjeri vrijeme izvršavanja eksperimenta bez izmjene njegove osnovne logike.
+
+### Struktura projekta
+
+```text
+np-filip-starovlah/
+│
+├── src/
+│   ├── __init__.py
+│   │
+│   ├── cijene.py
+│   │
+│   ├── rezervacije_monolitno.py
+│   │
+│   ├── rezervacije/
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── protocols.py
+│   │   ├── data_source.py
+│   │   ├── reporter.py
+│   │   ├── reservation_service.py
+│   │   └── rezervacije.py
+│   │
+│   └── ml_eksperimenti/
+│       ├── __init__.py
+│       ├── model_factory.py
+│       ├── strategies.py
+│       ├── observers.py
+│       ├── experiment.py
+│       ├── decorators.py
+│       └── main.py
+│
+├── tests/
+│   ├── test_cijene.py
+│   ├── test_rezervacije.py
+│   └── test_ml_eksperimenti.py
+│
+├── .gitignore
+├── pyproject.toml
+└── README.md
+```
+
+### Arhitektura i tok izvršavanja
+
+```mermaid
+flowchart TD
+    A[Main] --> B[IrisExperiment]
+    B --> C[BaseExperiment]
+    C --> D[ModelFactory]
+    D --> E[ML Model]
+    C --> F[MetricStrategy]
+    F --> G[Accuracy / Precision / Recall / F1]
+    C --> H[TrainingMonitor]
+    H --> I[ConsoleObserver]
+    C --> J[Measure Time Decorator]
+    C --> K[Iris Dataset]
+```
+
+### Pokretanje projekta
+
+Instalacija potrebne biblioteke:
+
+```bash
+python -m pip install scikit-learn
+```
+
+Pokretanje eksperimenta iz glavnog direktorijuma projekta:
+
+```bash
+python -m src.ml_eksperimenti.main
+```
+
+Pokretanje testova:
+
+```bash
+pytest -v
+```
+
+Provjera kvaliteta koda:
+
+```bash
+ruff check .
+```
+
+### Rezultati eksperimenta
+
+Prilikom testiranja korišćen je Logistic Regression model i Accuracy metrika.
+
+- Skup podataka: Iris
+- Model: Logistic Regression
+- Accuracy: 0.9667 (96,67%)
+- Vrijeme izvršavanja: približno 0.0356 sekundi
+
+Rezultati pokazuju da framework uspješno izvršava eksperiment, trenira model, vrši evaluaciju i prati vrijeme izvršavanja.
+
+### Testiranje
+
+Za provjeru funkcionalnosti implementirano je 10 testova koji obuhvataju:
+
+- Kreiranje modela pomoću Factory obrasca.
+- Provjeru ponašanja u slučaju nepoznatog modela.
+- Izračunavanje evaluacionih metrika.
+- Slanje obavještenja putem Observer obrasca.
+- Izvršavanje eksperimenta nad Iris skupom podataka.
+- Mjerenje vremena izvršavanja pomoću Decorator obrasca.
+
+Ukupan rezultat testiranja kompletnog repozitorijuma: **17 uspješno izvršenih testova.**
+
+### Korišćenje AI alata
+
+AI alat je korišćen kao podrška tokom razvoja projekta, prvenstveno za istraživanje obrazaca dizajna, razumijevanje njihove primjene u Pythonu, predlaganje strukture projekta i pomoć pri pisanju testova.
+
+Primjeri korišćenih promptova:
+
+- Objasni kako se Factory obrazac može primijeniti za kreiranje različitih ML modela u Pythonu.
+- Kako implementirati Strategy obrazac za različite evaluacione metrike mašinskog učenja?
+- Objasni Observer obrazac i njegovu primjenu za praćenje toka treniranja modela.
+- Kako implementirati Template Method obrazac za definisanje koraka ML eksperimenta?
+- Kako pomoću Decorator obrasca mjeriti vrijeme izvršavanja funkcije?
+- Predloži pytest testove za provjeru implementiranih obrazaca dizajna.
+
+Predložena rješenja su analizirana, prilagođena strukturi projekta i provjerena kroz izvršavanje testova.
+```
